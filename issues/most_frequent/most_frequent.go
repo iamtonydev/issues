@@ -12,29 +12,24 @@ func MostFrequent(data []int, n int) ([]int, error) {
 
 	repeats := make(map[int]int)
 	for _, v := range data {
-		repeats[v] += 1
+		repeats[v]++
 	}
 
-	kvs := make([][2]int, 0, len(repeats))
-	for k, v := range repeats {
-		kvs = append(kvs, [2]int{k, v})
+	keys := make([]int, 0, len(repeats))
+	for k, _ := range repeats {
+		keys = append(keys, k)
 	}
 
-	sort.Slice(kvs, func(i, j int) bool {
-		return kvs[i][1] > kvs[j][1]
+	sort.Slice(keys, func(i, j int) bool {
+		return repeats[keys[i]] > repeats[keys[j]]
 	})
 
 	var resLen int
-	if n < len(kvs) {
+	if n < len(keys) {
 		resLen = n
 	} else {
-		resLen = len(kvs)
+		resLen = len(keys)
 	}
 
-	res := make([]int, 0, resLen)
-	for i := 0; i < resLen; i++ {
-		res = append(res, kvs[i][0])
-	}
-
-	return res, nil
+	return keys[:resLen], nil
 }
