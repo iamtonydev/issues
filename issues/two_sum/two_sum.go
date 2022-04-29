@@ -8,17 +8,16 @@ func TwoSum(data []int, target int) ([]int, error) {
 	}
 
 	previous := make(map[int]struct{})
-	res := make([]int, 0, 2)
 
 	for _, v := range data {
-		need := target - v
-		if _, find := previous[need]; find {
-			res = append(res, need, v)
+		diff := target - v
+		if _, find := previous[diff]; find {
+			return []int{diff, v}, nil
 			break
 		}
 
 		previous[v] = struct{}{}
 	}
 
-	return res, nil
+	return []int{0, 0}, nil
 }

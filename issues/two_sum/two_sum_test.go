@@ -26,6 +26,15 @@ func TestTwoSum(t *testing.T) {
 		require.Equal(t, expected, res)
 	})
 
+	t.Run("sum not find", func(t *testing.T) {
+		data := []int{11, 142, 56, 70, 6, 12, 123, 5, 9, 2}
+		target := 200
+		expected := []int{0, 0}
+		res, err := TwoSum(data, target)
+		require.NoError(t, err)
+		require.Equal(t, expected, res)
+	})
+
 	t.Run("nil data raise error", func(t *testing.T) {
 		_, err := TwoSum(nil, 0)
 		require.Error(t, err)
