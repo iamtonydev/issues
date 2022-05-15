@@ -68,4 +68,18 @@ func TestList(t *testing.T) {
 		require.Nil(t, l.Front().Next)
 		require.Nil(t, l.Front().Prev)
 	})
+
+	t.Run("remove one element from list", func(t *testing.T) {
+		l := NewList()
+		expectedBack := l.PushFront(1)
+		l.PushFront(2)
+		expectedFront := l.PushFront(3)
+
+		item := &ListItem{Value: 10}
+		l.Remove(item)
+
+		require.Equal(t, 2, l.Len())
+		require.Equal(t, expectedFront, l.Front())
+		require.Equal(t, expectedBack, l.Back())
+	})
 }
