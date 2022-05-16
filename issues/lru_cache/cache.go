@@ -19,15 +19,15 @@ type lruCache struct {
 	capacity int
 	queue    List
 	items    map[Key]*ListItem
-	mu       *sync.Mutex
+	mu       sync.Mutex
 }
 
 func NewCache(capacity int) Cache {
 	return &lruCache{
 		capacity: capacity,
-		queue:    NewList(),
+		queue:    newList(),
 		items:    make(map[Key]*ListItem, capacity),
-		mu:       new(sync.Mutex),
+		mu:       sync.Mutex{},
 	}
 }
 
@@ -35,43 +35,45 @@ func (c *lruCache) Set(key Key, value interface{}) bool {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
-	cacheObj := cacheItem{
+	item := cacheItem{
 		key:   key,
 		value: value,
 	}
-	listItem, find := c.items[key]
 
-	if find {
-		listItem.Value = cacheObj
+	if listItem, found := c.items[key]; found {
+		listItem.Value = item
 		c.queue.MoveToFront(listItem)
-	} else {
-		if c.queue.Len() == c.capacity {
-			lastCacheItem := c.queue.Back()
-			c.queue.Remove(lastCacheItem)
-			delete(c.items, lastCacheItem.Value.(cacheItem).key)
-		}
-		listItem = c.queue.PushFront(cacheObj)
 		c.items[key] = listItem
+		return found
 	}
-	return find
+
+	if c.queue.Len() == c.capacity {
+		lastCacheItem := c.queue.Back()
+		c.queue.Remove(lastCacheItem)
+		delete(c.items, lastCacheItem.Value.(cacheItem).key)
+	}
+	listItem := c.queue.PushFront(item)
+	c.items[key] = listItem
+
+	return false
 }
 
 func (c *lruCache) Get(key Key) (interface{}, bool) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
-	listItem, find := c.items[key]
-	if find {
+	listItem, found := c.items[key]
+	if found {
 		c.queue.MoveToFront(listItem)
-		return listItem.Value.(cacheItem).value, find
+		return listItem.Value.(cacheItem).value, found
 	}
-	return nil, find
+	return nil, found
 }
 
 func (c *lruCache) Clear() {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
-	c.queue = NewList()
+	c.queue = newList()
 	c.items = make(map[Key]*ListItem, c.capacity)
 }

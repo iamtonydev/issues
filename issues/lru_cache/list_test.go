@@ -8,7 +8,7 @@ import (
 
 func TestList(t *testing.T) {
 	t.Run("empty list", func(t *testing.T) {
-		l := NewList()
+		l := newList()
 
 		require.Equal(t, 0, l.Len())
 		require.Nil(t, l.Front())
@@ -16,7 +16,7 @@ func TestList(t *testing.T) {
 	})
 
 	t.Run("complex", func(t *testing.T) {
-		l := NewList()
+		l := newList()
 
 		l.PushFront(10) // [10]
 		l.PushBack(20)  // [10, 20]
@@ -50,7 +50,7 @@ func TestList(t *testing.T) {
 	})
 
 	t.Run("one element via push front", func(t *testing.T) {
-		l := NewList()
+		l := newList()
 
 		l.PushFront(10)
 		require.Equal(t, 10, l.Front().Value)
@@ -60,7 +60,7 @@ func TestList(t *testing.T) {
 	})
 
 	t.Run("one element via push back", func(t *testing.T) {
-		l := NewList()
+		l := newList()
 
 		l.PushBack(10)
 		require.Equal(t, 10, l.Front().Value)
@@ -70,7 +70,7 @@ func TestList(t *testing.T) {
 	})
 
 	t.Run("remove one element from list", func(t *testing.T) {
-		l := NewList()
+		l := newList()
 		expectedBack := l.PushFront(1)
 		l.PushFront(2)
 		expectedFront := l.PushFront(3)

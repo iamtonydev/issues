@@ -22,7 +22,7 @@ type list struct {
 	back  *ListItem
 }
 
-func NewList() List {
+func newList() List {
 	return new(list)
 }
 
