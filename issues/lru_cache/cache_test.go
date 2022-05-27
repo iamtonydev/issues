@@ -90,6 +90,46 @@ func TestCache(t *testing.T) {
 		require.False(t, ok)
 		require.Nil(t, val)
 	})
+
+	t.Run("purge logic with frequency of use", func(t *testing.T) {
+		n := 10
+		c := NewCache(2)
+
+		wasInCache := c.Set("aaa", 100)
+		require.False(t, wasInCache)
+
+		wasInCache = c.Set("bbb", 200)
+		require.False(t, wasInCache)
+
+		for i := 0; i < n; i++ {
+			val, ok := c.Get("aaa")
+			require.True(t, ok)
+			require.Equal(t, 100, val)
+
+			val, ok = c.Get("bbb")
+			require.True(t, ok)
+			require.Equal(t, 200, val)
+		}
+
+		val, ok := c.Get("aaa")
+		require.True(t, ok)
+		require.Equal(t, 100, val)
+
+		wasInCache = c.Set("ccc", 300)
+		require.False(t, wasInCache)
+
+		val, ok = c.Get("bbb")
+		require.False(t, ok)
+		require.Nil(t, val)
+
+		val, ok = c.Get("aaa")
+		require.True(t, ok)
+		require.Equal(t, 100, val)
+
+		val, ok = c.Get("ccc")
+		require.True(t, ok)
+		require.Equal(t, 300, val)
+	})
 }
 
 func TestCacheMultithreading(t *testing.T) {

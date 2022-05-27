@@ -65,6 +65,7 @@ func (c *lruCache) Get(key Key) (interface{}, bool) {
 	listItem, found := c.items[key]
 	if found {
 		c.queue.MoveToFront(listItem)
+		c.items[key] = c.queue.Front()
 		return listItem.Value.(cacheItem).value, found
 	}
 	return nil, found
